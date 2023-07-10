@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World WASM</title>
+    <script src="../wasm_exec.js"></script>
+    <script>
+        const go = new Go();
+                 WebAssembly.instantiateStreaming(fetch("./main.wasm"), go.importObject).then((result) => {
+                    go.run(result.instance);
+                 });
+
+    </script>
+    <script>
+        function updateH3(h1Message, h3Message){
+            const h1 = document.querySelector('h1');
+            const h3 = document.querySelector('h3');
+            h1.innerHTML = h1Message;
+            h3.innerHTML = h3Message;            
+        }
+    </script>
+</head>
+<body style="text-align: center;">
+    <h1> Hello World </h1>
+    <h3>I am from same HTML</h3>
+    <button onclick="helloWorld()" > Hello World From  WASM</button>    
+</body>
+</html>

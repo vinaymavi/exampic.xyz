@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++</title>
+    <script src="./greeting.js"></script>
+</head>
+<body>
+    <h1></h1>
+    <button id="greeting">Generate Greeting Message</button>
+    <button id="main">Run main Function</button>
+    
+    <script>
+        const greetingButton = document.querySelector('#greeting');
+        let count = 0;
+        greetingButton.addEventListener('click', () => {
+            const h1 = document.querySelector('h1');
+            const js_wrapper = Module.cwrap('get_string', 'string', ['int']); 
+            const greeting = () => js_wrapper(count % 3);
+            count++;
+            h1.textContent = greeting();
+        });
+
+        const mainButton = document.querySelector('#main');
+        mainButton.addEventListener('click', () => {
+            const js_wrapper = Module.cwrap('main', 'number', []);
+            js_wrapper();
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thumbnailes with web worker</title>
+    <script>
+      const worker = new Worker("./thumbnail.js");
+    </script>    
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table,
+        td,
+        th {
+            border: 1px solid black;
+            padding: 5px;
+        }
+        th {
+            text-align: left;
+        }
+        table img{            
+            max-height: 200px;
+            width: auto;
+        }
+    </style>
+  </head>
+  <body style="text-align: center">
+    <h1>Crate Thumbnailes</h1>
+    <input type="file"  multiple/>
+    <div class="output"></div>
+    <h4></h4>
+    <hr />
+    <button>Alert Button</button>
+    <hr />    
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Original Image</th>
+            <th>Cropped Image</th>            
+        </tr>
+    </table>
+    <script>
+      document.querySelector("button").addEventListener("click", () => {
+        alert("Button Clicked");
+      });
+      const fileInput = document.querySelector("input[type=file]");
+      const output = document.querySelector(".output");
+      let count = 0;
+      let startTime = 0;      
+      fileInput.addEventListener("change", () => {
+        for (const file of fileInput.files) {
+            const reader = new FileReader();
+          reader.addEventListener("load", () => {
+            worker.postMessage(btoa(reader.result));            
+          });
+          reader.readAsBinaryString(file);
+        }        
+
+      });
+
+      worker.addEventListener("message", (event) => {
+        const { cropImagebase64,originalImageBase64 } = event.data;
+        createImageElement(cropImagebase64,originalImageBase64);
+      });
+
+      function createImageElement(cropImagebase64,originalImageBase64) {
+        const originalImage = document.createElement("img");
+        originalImage.src = 'data:image/png;base64,' + originalImageBase64;
+
+        const cropImage = document.createElement("img");
+        cropImage.src = 'data:image/png;base64,' + cropImagebase64;
+
+        const table = document.querySelector("table");
+        const row = table.insertRow();
+        const cell0 = row.insertCell();
+        const cell1 = row.insertCell();
+        const cell2 = row.insertCell();        
+        if(count === 0){
+          startTime = new Date().getTime();
+        }
+        cell0.appendChild(document.createTextNode(++count));
+        cell1.appendChild(originalImage);
+        cell2.appendChild(cropImage);
+        upateTime(count);
+      }
+      function upateTime(count){
+        const time = new Date().getTime();
+        document.querySelector("h4").innerHTML = `File processed ${count},Total time taken: ${Math.floor((time - startTime)/1000)} Seconds`;
+      }
+    </script>
+  </body>
+</html>
