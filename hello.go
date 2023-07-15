@@ -33,7 +33,7 @@ func helloWorld() js.Func {
 func cropImage() js.Func {
 
 	return js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		go cropImageGoRoutine(args[0].String())
+		cropImageGoRoutine(args[0].String())
 		return nil
 	})
 }

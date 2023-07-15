@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thumbnailes with web worker</title>
+    <title>Crate Thumbnailes with threads</title>
     <script>
       const worker = new Worker("./thumbnail.js");
     </script>    
@@ -28,7 +28,7 @@
     </style>
   </head>
   <body style="text-align: center">
-    <h1>Crate Thumbnailes</h1>
+    <h1>Crate Thumbnailes with thread</h1>
     <input type="file"  multiple/>
     <div class="output"></div>
     <h4></h4>
@@ -54,7 +54,7 @@
         for (const file of fileInput.files) {
             const reader = new FileReader();
           reader.addEventListener("load", () => {
-            worker.postMessage(btoa(reader.result));            
+            worker.postMessage({from:'webpage',imagebase64:btoa(reader.result)});
           });
           reader.readAsBinaryString(file);
         }        
@@ -85,6 +85,8 @@
         cell1.appendChild(originalImage);
         cell2.appendChild(cropImage);
         upateTime(count);
+        delete originalImage;
+        delete cropImage;
       }
       function upateTime(count){
         const time = new Date().getTime();
