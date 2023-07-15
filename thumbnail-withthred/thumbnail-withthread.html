@@ -25,13 +25,17 @@
             max-height: 200px;
             width: auto;
         }
+        h2 {
+           position: sticky;
+            top: 0;
+        }
     </style>
   </head>
   <body style="text-align: center">
     <h1>Crate Thumbnailes with thread</h1>
     <input type="file"  multiple/>
     <div class="output"></div>
-    <h4></h4>
+    <h2></h2>
     <hr />
     <button>Alert Button</button>
     <hr />    
@@ -49,6 +53,7 @@
       const fileInput = document.querySelector("input[type=file]");
       const output = document.querySelector(".output");
       let count = 0;
+      let totalSize = 0;
       let startTime = 0;      
       fileInput.addEventListener("change", () => {
         for (const file of fileInput.files) {
@@ -56,6 +61,7 @@
           reader.addEventListener("load", () => {
             worker.postMessage({from:'webpage',imagebase64:btoa(reader.result)});
           });
+          totalSize += file.size;
           reader.readAsBinaryString(file);
         }        
 
@@ -90,7 +96,7 @@
       }
       function upateTime(count){
         const time = new Date().getTime();
-        document.querySelector("h4").innerHTML = `File processed ${count},Total time taken: ${Math.floor((time - startTime)/1000)} Seconds`;
+        document.querySelector("h2").innerHTML = `File processed ${count},Time: ${Math.floor((time - startTime)/1000)} Sec, Total Size: ${Math.floor(totalSize/1024)} KB`;
       }
     </script>
   </body>

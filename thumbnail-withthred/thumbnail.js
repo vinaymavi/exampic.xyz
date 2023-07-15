@@ -1,6 +1,6 @@
 
 const tasks = [];
-const SLAVE_COUNT = 4;
+const SLAVE_COUNT = 10;
 
 const slaves = {};
 
